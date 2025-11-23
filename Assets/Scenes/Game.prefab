@@ -322,7 +322,7 @@ Transform:
   m_GameObject: {fileID: 885849621142590680}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5.92}
+  m_LocalPosition: {x: 0, y: 0, z: -7.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -603,7 +603,7 @@ Transform:
   m_GameObject: {fileID: 4124613977082558359}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.5, y: 0, z: -5.92}
+  m_LocalPosition: {x: -2.5, y: 0, z: -7.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -634,7 +634,7 @@ Transform:
   m_GameObject: {fileID: 4181968921315507614}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.5, y: 0, z: -5.92}
+  m_LocalPosition: {x: 2.5, y: 0, z: -7.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1176,7 +1176,7 @@ Transform:
   m_GameObject: {fileID: 7555324704989106634}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1201,6 +1201,8 @@ MonoBehaviour:
   cellPrefab: {fileID: 6892408314079595542, guid: add7ad0d5b759144eaa486cecd66fb8c, type: 3}
   availableCellColor: {r: 1, g: 1, b: 1, a: 1}
   unavailableCellColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  cellNonGridPrefab: {fileID: 2744310705512840367, guid: 57dd2b36ddc99e74c83bb4a9c995273e, type: 3}
+  pathCheckRadius: 0.5
 --- !u!1 &7614092194541612354
 GameObject:
   m_ObjectHideFlags: 0

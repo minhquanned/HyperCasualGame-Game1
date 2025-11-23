@@ -11,6 +11,7 @@ public class BlockExpandGrid : MonoBehaviour
     [Header("Input")]
     [SerializeField] private Camera mainCamera;
     [SerializeField] private LayerMask gridLayerMask = -1;
+    [SerializeField] private LayerMask nonGridLayerMask = -1; // Layer mask cho cellNonGrid
     
     private Vector3 originalPosition;
     private bool isDragging = false;
@@ -94,20 +95,26 @@ public class BlockExpandGrid : MonoBehaviour
         
         isDragging = false;
         
-        // Kiểm tra xem có thả vào grid không
+        // Kiểm tra xem có thả vào grid hoặc cellNonGrid không
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         
         Grid grid = FindFirstObjectByType<Grid>();
-        if (grid != null && Physics.Raycast(ray, out hit, Mathf.Infinity, gridLayerMask))
+        if (grid != null)
         {
-            // Sử dụng method mới để tự động xác định grid dựa trên vị trí world
-            if (grid.ExpandGridAtWorldPosition(hit.point, 1))
+            // Thử raycast vào grid layer hoặc nonGrid layer
+            LayerMask combinedMask = gridLayerMask | nonGridLayerMask;
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, combinedMask))
             {
-                // Xóa block sau khi dùng
-                isUsed = true;
-                Destroy(gameObject);
-                return;
+                // Sử dụng method mới để tự động xác định grid dựa trên vị trí world
+                // Method này sẽ tự động xóa cellNonGrid nếu có
+                if (grid.ExpandGridAtWorldPosition(hit.point, 1))
+                {
+                    // Xóa block sau khi dùng
+                    isUsed = true;
+                    Destroy(gameObject);
+                    return;
+                }
             }
         }
         

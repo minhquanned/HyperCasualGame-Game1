@@ -17,6 +17,10 @@ public class Grid : MonoBehaviour
     [SerializeField] private Color availableCellColor = Color.white;
     [SerializeField] private Color unavailableCellColor = Color.gray;
     
+    [Header("Non-Grid Cells (Đất liền)")]
+    [SerializeField] private GameObject cellNonGridPrefab; // Prefab cho các ô đất liền xung quanh grid
+    [SerializeField] private float pathCheckRadius = 0.5f; // Bán kính kiểm tra path
+    
     // Enum để phân biệt 2 grid
     public enum GridIndex
     {
@@ -28,12 +32,22 @@ public class Grid : MonoBehaviour
     private Dictionary<GridIndex, Dictionary<Vector2Int, bool>> cells = new Dictionary<GridIndex, Dictionary<Vector2Int, bool>>();
     private Dictionary<GridIndex, Dictionary<Vector2Int, GameObject>> cellVisuals = new Dictionary<GridIndex, Dictionary<Vector2Int, GameObject>>();
     
+    // Dictionary lưu các cellNonGrid (đất liền) - key là world position (Vector3)
+    private Dictionary<Vector3, GameObject> cellNonGrids = new Dictionary<Vector3, GameObject>();
+    
     // Vị trí center của mỗi grid trong world space
     private Dictionary<GridIndex, Vector3> gridWorldPositions = new Dictionary<GridIndex, Vector3>();
     
+    // Reference đến PathManager để kiểm tra path
+    private PathManager pathManager;
+    
     private void Start()
     {
+        // Tìm PathManager
+        pathManager = FindFirstObjectByType<PathManager>();
+        
         InitializeGrids();
+        SpawnNonGridCells();
     }
     
     /// <summary>
@@ -80,6 +94,119 @@ public class Grid : MonoBehaviour
     }
     
     /// <summary>
+    /// Spawn các cellNonGrid (đất liền) xung quanh các grid cells
+    /// </summary>
+    private void SpawnNonGridCells()
+    {
+        if (cellNonGridPrefab == null) return;
+        
+        HashSet<Vector3> checkedPositions = new HashSet<Vector3>();
+        int spawnRadius = 3; // Bán kính spawn đất liền xung quanh mỗi grid cell
+        
+        // Duyệt qua tất cả các grid cells và spawn đất liền xung quanh
+        foreach (var gridPair in cells)
+        {
+            GridIndex gridIdx = gridPair.Key;
+            Vector3 gridCenter = gridWorldPositions[gridIdx];
+            
+            foreach (Vector2Int cellPos in gridPair.Value.Keys)
+            {
+                Vector3 cellWorldPos = GridToWorldPosition(gridIdx, cellPos);
+                
+                // Spawn đất liền xung quanh cell này
+                for (int dx = -spawnRadius; dx <= spawnRadius; dx++)
+                {
+                    for (int dz = -spawnRadius; dz <= spawnRadius; dz++)
+                    {
+                        if (dx == 0 && dz == 0) continue; // Bỏ qua chính cell đó
+                        
+                        Vector3 nonGridPos = cellWorldPos + new Vector3(dx * cellSize, 0, dz * cellSize);
+                        
+                        // Làm tròn vị trí để tránh duplicate
+                        nonGridPos = new Vector3(
+                            Mathf.Round(nonGridPos.x / cellSize) * cellSize,
+                            nonGridPos.y,
+                            Mathf.Round(nonGridPos.z / cellSize) * cellSize
+                        );
+                        
+                        // Kiểm tra xem đã spawn ở vị trí này chưa
+                        if (checkedPositions.Contains(nonGridPos)) continue;
+                        checkedPositions.Add(nonGridPos);
+                        
+                        // Kiểm tra xem vị trí này có phải là grid cell không
+                        bool isGridCell = IsPositionAGridCell(nonGridPos);
+                        
+                        if (isGridCell) continue; // Đã là grid cell, không spawn đất liền
+                        
+                        // Kiểm tra xem có nằm trên path không
+                        if (IsPositionOnPath(nonGridPos)) continue;
+                        
+                        // Spawn cellNonGrid
+                        GameObject nonGridCell = Instantiate(cellNonGridPrefab, transform);
+                        nonGridCell.transform.position = nonGridPos;
+                        nonGridCell.transform.localScale = new Vector3(cellSize, cellSize, 0.5f);
+                        cellNonGrids[nonGridPos] = nonGridCell;
+                    }
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Kiểm tra xem một vị trí có nằm trên path không
+    /// </summary>
+    private bool IsPositionOnPath(Vector3 worldPos)
+    {
+        if (pathManager == null) return false;
+        
+        List<Vector3> waypoints = pathManager.GetWaypoints();
+        if (waypoints.Count < 2) return false;
+        
+        // Kiểm tra khoảng cách đến các đoạn đường giữa các waypoints
+        for (int i = 0; i < waypoints.Count - 1; i++)
+        {
+            Vector3 start = waypoints[i];
+            Vector3 end = waypoints[i + 1];
+            
+            // Tính khoảng cách từ điểm đến đoạn thẳng
+            float distance = DistanceToLineSegment(worldPos, start, end);
+            
+            if (distance <= pathCheckRadius)
+            {
+                return true; // Nằm trên path
+            }
+        }
+        
+        return false;
+    }
+    
+    /// <summary>
+    /// Tính khoảng cách từ một điểm đến một đoạn thẳng
+    /// </summary>
+    private float DistanceToLineSegment(Vector3 point, Vector3 lineStart, Vector3 lineEnd)
+    {
+        Vector3 line = lineEnd - lineStart;
+        float lineLength = line.magnitude;
+        
+        if (lineLength < 0.001f) // Đoạn thẳng quá ngắn
+        {
+            return Vector3.Distance(point, lineStart);
+        }
+        
+        Vector3 lineDir = line / lineLength;
+        Vector3 pointToStart = point - lineStart;
+        
+        // Project điểm lên đoạn thẳng
+        float projection = Vector3.Dot(pointToStart, lineDir);
+        projection = Mathf.Clamp(projection, 0f, lineLength);
+        
+        // Điểm gần nhất trên đoạn thẳng
+        Vector3 closestPoint = lineStart + lineDir * projection;
+        
+        return Vector3.Distance(point, closestPoint);
+    }
+    
+    /// <summary>
     /// Xác định grid nào dựa trên vị trí world (grid nào gần hơn)
     /// </summary>
     private GridIndex GetGridIndexFromWorldPosition(Vector3 worldPos)
@@ -87,6 +214,35 @@ public class Grid : MonoBehaviour
         float distToGrid1 = Vector3.Distance(worldPos, gridWorldPositions[GridIndex.Grid1]);
         float distToGrid2 = Vector3.Distance(worldPos, gridWorldPositions[GridIndex.Grid2]);
         return distToGrid1 < distToGrid2 ? GridIndex.Grid1 : GridIndex.Grid2;
+    }
+    
+    /// <summary>
+    /// Kiểm tra xem một vị trí world có phải là grid cell không
+    /// </summary>
+    private bool IsPositionAGridCell(Vector3 worldPos)
+    {
+        // Kiểm tra cả 2 grid
+        foreach (var gridPair in cells)
+        {
+            GridIndex gridIdx = gridPair.Key;
+            Vector3 gridCenter = gridWorldPositions[gridIdx];
+            Vector3 localPos = worldPos - gridCenter;
+            int x = Mathf.RoundToInt(localPos.x / cellSize);
+            int z = Mathf.RoundToInt(localPos.z / cellSize);
+            Vector2Int cellPos = new Vector2Int(x, z);
+            
+            // Kiểm tra xem cell này có trong grid không và có gần với vị trí world không
+            if (gridPair.Value.ContainsKey(cellPos))
+            {
+                Vector3 cellWorldPos = GridToWorldPosition(gridIdx, cellPos);
+                float distance = Vector3.Distance(worldPos, cellWorldPos);
+                if (distance < cellSize * 0.5f) // Cho phép sai số nhỏ
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
     /// <summary>
@@ -98,7 +254,7 @@ public class Grid : MonoBehaviour
         {
             GameObject cell = Instantiate(cellPrefab, transform);
             cell.transform.position = GridToWorldPosition(gridIndex, cellPos);
-            cell.transform.localScale = new Vector3(cellSize, cellSize, 1f);
+            cell.transform.localScale = new Vector3(cellSize, cellSize, 0.1f);
             cellVisuals[gridIndex][cellPos] = cell;
             UpdateCellVisual(gridIndex, cellPos, true);
         }
@@ -442,8 +598,86 @@ public class Grid : MonoBehaviour
     /// </summary>
     public bool ExpandGridAtWorldPosition(Vector3 worldPos, int expansionCount = 1)
     {
+        
         var (gridIndex, cellPos) = WorldToGridPositionWithIndex(worldPos);
-        return ExpandGridAtPosition(gridIndex, cellPos, expansionCount);
+        bool expanded = ExpandGridAtPosition(gridIndex, cellPos, expansionCount);
+        
+        // Nếu mở rộng thành công, spawn lại đất liền xung quanh vị trí mới
+        if (expanded)
+        {
+            // SpawnNonGridCellsAroundPosition(gridIndex, cellPos);
+            // Xóa cellNonGrid ở vị trí này nếu có
+            RemoveNonGridCellAtPosition(worldPos);
+        }
+        
+        return expanded;
+    }
+    
+    /// <summary>
+    /// Xóa cellNonGrid ở vị trí cụ thể
+    /// </summary>
+    private void RemoveNonGridCellAtPosition(Vector3 worldPos)
+    {
+        // Làm tròn vị trí để tìm đúng key
+        Vector3 roundedPos = new Vector3(
+            Mathf.Round(worldPos.x / cellSize) * cellSize,
+            transform.position.y,
+            Mathf.Round(worldPos.z / cellSize) * cellSize
+        );
+        
+        if (cellNonGrids.ContainsKey(roundedPos))
+        {
+            if (cellNonGrids[roundedPos] != null)
+            {
+                Destroy(cellNonGrids[roundedPos]);
+            }
+            cellNonGrids.Remove(roundedPos);
+        }
+    }
+    
+    /// <summary>
+    /// Spawn đất liền xung quanh một vị trí grid mới được mở rộng
+    /// </summary>
+    private void SpawnNonGridCellsAroundPosition(GridIndex gridIndex, Vector2Int cellPos)
+    {
+        if (cellNonGridPrefab == null) return;
+        
+        Vector3 cellWorldPos = GridToWorldPosition(gridIndex, cellPos);
+        int spawnRadius = 3;
+        
+        for (int dx = -spawnRadius; dx <= spawnRadius; dx++)
+        {
+            for (int dz = -spawnRadius; dz <= spawnRadius; dz++)
+            {
+                if (dx == 0 && dz == 0) continue; // Bỏ qua chính cell đó
+                
+                Vector3 nonGridPos = cellWorldPos + new Vector3(dx * cellSize, 0, dz * cellSize);
+                
+                // Làm tròn vị trí
+                nonGridPos = new Vector3(
+                    Mathf.Round(nonGridPos.x / cellSize) * cellSize,
+                    nonGridPos.y,
+                    Mathf.Round(nonGridPos.z / cellSize) * cellSize
+                );
+                
+                // Kiểm tra xem đã có cellNonGrid ở đây chưa
+                if (cellNonGrids.ContainsKey(nonGridPos)) continue;
+                
+                        // Kiểm tra xem vị trí này có phải là grid cell không
+                        bool isGridCell = IsPositionAGridCell(nonGridPos);
+                
+                if (isGridCell) continue; // Đã là grid cell
+                
+                // Kiểm tra xem có nằm trên path không
+                if (IsPositionOnPath(nonGridPos)) continue;
+                
+                // Spawn cellNonGrid
+                GameObject nonGridCell = Instantiate(cellNonGridPrefab, transform);
+                nonGridCell.transform.position = nonGridPos;
+                nonGridCell.transform.localScale = new Vector3(cellSize, cellSize, 1f);
+                cellNonGrids[nonGridPos] = nonGridCell;
+            }
+        }
     }
     
     /// <summary>

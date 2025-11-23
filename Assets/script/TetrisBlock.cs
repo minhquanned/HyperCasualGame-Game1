@@ -242,6 +242,7 @@ public class TetrisBlock : MonoBehaviour
             gridIndex = gridIdx;
             gridPosition = gridPos;
             transform.position = grid.GridToWorldPosition(gridIdx, gridPos);
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
             grid.OccupyCells(gridIdx, gridPos, currentShape);
             isPlaced = true;
             originalPosition = transform.position;
@@ -328,7 +329,7 @@ public class TetrisBlock : MonoBehaviour
         Vector3 towerPosition = sum / blockCells.Count;
         
         // Spawn tower mới
-        GameObject towerObj = Instantiate(towerPrefab, towerPosition, Quaternion.identity);
+        GameObject towerObj = Instantiate(towerPrefab, towerPosition, Quaternion.identity, transform);
         currentTower = towerObj.GetComponent<Tower>();
         if (currentTower != null)
         {
