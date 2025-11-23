@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2726072067797287669
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5249803083595688555}
+  - component: {fileID: 4215640615578436}
+  m_Layer: 0
+  m_Name: Tetris
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5249803083595688555
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2726072067797287669}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4974573250638230116}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4215640615578436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2726072067797287669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8fbc17fde5e32b4988764bf8f944690, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockType: 0
+  level: 1
+  towerPrefab: {fileID: 1636152372478545940, guid: 5894489617d9f114c84f93215304a571, type: 3}
+  levelText: {fileID: 0}
+  blockCellPrefab: {fileID: 3627897200217589422, guid: 46590b605470c6a4db97a00a0efdad33, type: 3}
+  cellContainer: {fileID: 5249803083595688555}
+  mainCamera: {fileID: 0}
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  colorI: {r: 0, g: 1, b: 1, a: 1}
+  colorO: {r: 1, g: 1, b: 0, a: 1}
+  colorT: {r: 1, g: 0, b: 1, a: 1}
+  colorS: {r: 0, g: 1, b: 0, a: 1}
+  colorZ: {r: 1, g: 0, b: 0, a: 1}
+  colorJ: {r: 0, g: 0, b: 1, a: 1}
+  colorL: {r: 1, g: 0.5, b: 0, a: 1}
+  tapTimeThreshold: 0.2
+--- !u!1 &6013110489205206212
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4974573250638230116}
+  m_Layer: 0
+  m_Name: TowerParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4974573250638230116
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6013110489205206212}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5249803083595688555}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
