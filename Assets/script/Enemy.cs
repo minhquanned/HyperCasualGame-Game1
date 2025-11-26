@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Quái vật di chuyển theo waypoint và tấn công thành (3D)
@@ -11,10 +12,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float moveSpeed = 2f; // World units per second (3D)
     [SerializeField] private float damageToBase = 10f;
+    [SerializeField] private int moneyReward = 10; // Tiền nhận được khi kill enemy
 
     [Header("Visual")]
-    [SerializeField] private GameObject healthBarPrefab; // Prefab cho health bar (3D Canvas hoặc Billboard)
-    [SerializeField] private Transform healthBarParent;
+    [SerializeField] private Slider healthSlider; // Reference đến Slider hiển thị máu
 
     private float currentHealth;
     private List<Vector3> path;
@@ -106,6 +107,13 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         isMoving = false;
+        
+        // Thêm tiền khi kill enemy
+        if (TowerDataManager.Instance != null)
+        {
+            TowerDataManager.Instance.AddMoney(moneyReward);
+        }
+        
         Destroy(gameObject);
     }
 
@@ -121,13 +129,15 @@ public class Enemy : MonoBehaviour
     }
 
     /// <summary>
-    /// Cập nhật thanh máu (3D)
+    /// Cập nhật thanh máu
     /// </summary>
     private void UpdateHealthBar()
     {
-        // Có thể dùng 3D Canvas hoặc Billboard để hiển thị health bar
-        // Hoặc dùng TextMeshPro để hiển thị số HP
-        // Tùy vào cách bạn muốn implement
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth;
+        }
     }
 
     /// <summary>

@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     [Header("Game Settings")]
     [SerializeField] private int maxTurns = 100;
     [SerializeField] private int itemsPerTurn = 3;
+    [SerializeField] private int winRewardMoney = 500; // Tiền nhận được khi thắng game
     
     [Header("References")]
     [SerializeField] private Grid grid;
@@ -273,6 +274,13 @@ public class GameManager : MonoBehaviour
             gameOverText.text = "Victory!";
             gameOverText.gameObject.SetActive(true);
         }
+        
+        // Thêm tiền khi thắng game
+        if (TowerDataManager.Instance != null)
+        {
+            TowerDataManager.Instance.AddMoney(winRewardMoney);
+        }
+        
         OnGameWon?.Invoke();
     }
     

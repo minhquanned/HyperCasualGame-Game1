@@ -42,8 +42,29 @@ public class Tower : MonoBehaviour
     
     private void Start()
     {
+        LoadStatsFromData();
         UpdateStats();
         UpdateRangeIndicator();
+    }
+    
+    /// <summary>
+    /// Load stats từ local data khi tower spawn
+    /// </summary>
+    private void LoadStatsFromData()
+    {
+        if (TowerDataManager.Instance != null)
+        {
+            TowerUpgradeData data = TowerDataManager.Instance.GetTowerData();
+            if (data != null)
+            {
+                baseDamage = data.baseDamage;
+                baseRange = data.baseRange;
+                baseFireRate = data.baseFireRate;
+                damagePerLevel = data.damagePerLevel;
+                rangePerLevel = data.rangePerLevel;
+                fireRatePerLevel = data.fireRatePerLevel;
+            }
+        }
     }
     
     private void Update()

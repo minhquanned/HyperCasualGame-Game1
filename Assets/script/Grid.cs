@@ -20,6 +20,7 @@ public class Grid : MonoBehaviour
     [Header("Non-Grid Cells (Đất liền)")]
     [SerializeField] private GameObject cellNonGridPrefab; // Prefab cho các ô đất liền xung quanh grid
     [SerializeField] private float pathCheckRadius = 0.5f; // Bán kính kiểm tra path
+    [SerializeField] private int spawnRadius = 3;  // Bán kính spawn đất liền xung quanh mỗi grid cell
     
     // Enum để phân biệt 2 grid
     public enum GridIndex
@@ -101,7 +102,6 @@ public class Grid : MonoBehaviour
         if (cellNonGridPrefab == null) return;
         
         HashSet<Vector3> checkedPositions = new HashSet<Vector3>();
-        int spawnRadius = 3; // Bán kính spawn đất liền xung quanh mỗi grid cell
         
         // Duyệt qua tất cả các grid cells và spawn đất liền xung quanh
         foreach (var gridPair in cells)

@@ -47,6 +47,12 @@ public class TetrisBlock : MonoBehaviour
     private Vector3 offsetDrag;
     private Plane dragPlane; // Plane để drag trong 3D
     
+    // Lưu thông tin khi bắt đầu drag một block đã đặt
+    private Grid.GridIndex savedGridIndex;
+    private Vector2Int savedGridPosition;
+    private BlockShape savedShape;
+    private bool wasPlacedBeforeDrag = false;
+    
     // Merge system
     private List<TetrisBlock> adjacentBlocks = new List<TetrisBlock>();
     
@@ -76,8 +82,7 @@ public class TetrisBlock : MonoBehaviour
     
     private void Update()
     {
-        if (isPlaced) return;
-        
+        // Cho phép input ngay cả khi đã đặt để có thể kéo thả lại
         HandleInput();
     }
     
@@ -134,8 +139,6 @@ public class TetrisBlock : MonoBehaviour
     
     private void OnPointerDown()
     {
-        if (isPlaced) return;
-        
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         
@@ -151,6 +154,19 @@ public class TetrisBlock : MonoBehaviour
                 originalPosition = transform.position;
                 isDragging = true;
                 dragPlane = new Plane(Vector3.up, transform.position);
+                
+                // Nếu block đã đặt, lưu thông tin và giải phóng cells
+                if (isPlaced && grid != null)
+                {
+                    wasPlacedBeforeDrag = true;
+                    savedGridIndex = gridIndex;
+                    savedGridPosition = gridPosition;
+                    savedShape = currentShape;
+                    
+                    // Giải phóng cells để có thể di chuyển
+                    grid.FreeCells(gridIndex, gridPosition, currentShape);
+                    isPlaced = false; // Tạm thời đánh dấu chưa đặt để có thể di chuyển
+                }
             }
         }
     }
@@ -171,7 +187,7 @@ public class TetrisBlock : MonoBehaviour
     
     private void OnPointerUp()
     {
-        if (isPlaced || !isDragging) return;
+        if (!isDragging) return;
         
         isDragging = false;
         
@@ -179,20 +195,39 @@ public class TetrisBlock : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         
+        bool placedSuccessfully = false;
+        
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, gridLayerMask))
         {
             Vector3 worldPos = hit.point - offsetDrag;
             var (gridIdx, gridPos) = grid.WorldToGridPositionWithIndex(worldPos);
             
-            // Đặt block vào grid
-            if (PlaceBlock(gridIdx, gridPos, worldPos))
+            // Đặt block vào grid (hoặc đặt lại nếu đã đặt trước đó)
+            if (PlaceBlock(gridIdx, gridPos, worldPos, wasPlacedBeforeDrag))
             {
+                placedSuccessfully = true;
+                wasPlacedBeforeDrag = false; // Reset flag
+                // Nếu block đã được merge, nó sẽ bị destroy trong MergeWith, nhưng method này đã return rồi nên không sao
                 return;
             }
         }
         
-        // Nếu không đặt được, quay về vị trí ban đầu
-        transform.position = originalPosition;
+        // Nếu không đặt được và block đã đặt trước đó, restore lại cells cũ
+        if (wasPlacedBeforeDrag && grid != null)
+        {
+            grid.OccupyCells(savedGridIndex, savedGridPosition, savedShape);
+            gridIndex = savedGridIndex;
+            gridPosition = savedGridPosition;
+            transform.position = grid.GridToWorldPosition(savedGridIndex, savedGridPosition);
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+            isPlaced = true;
+            wasPlacedBeforeDrag = false;
+        }
+        else if (!placedSuccessfully)
+        {
+            // Nếu không đặt được và không phải block đã đặt, quay về vị trí ban đầu
+            transform.position = originalPosition;
+        }
     }
     
     /// <summary>
@@ -223,14 +258,27 @@ public class TetrisBlock : MonoBehaviour
     /// <summary>
     /// Đặt khối vào grid
     /// </summary>
-    public bool PlaceBlock(Grid.GridIndex gridIdx, Vector2Int gridPos, Vector3 worldPos)
+    public bool PlaceBlock(Grid.GridIndex gridIdx, Vector2Int gridPos, Vector3 worldPos, bool isReplacing = false)
     {
         if (grid == null) return false;
+        
+        // Nếu đang đặt lại và vị trí mới giống vị trí cũ, chỉ cần restore lại
+        if (isReplacing && savedGridIndex == gridIdx && savedGridPosition == gridPos)
+        {
+            grid.OccupyCells(gridIdx, gridPos, currentShape);
+            gridIndex = gridIdx;
+            gridPosition = gridPos;
+            transform.position = grid.GridToWorldPosition(gridIdx, gridPos);
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+            isPlaced = true;
+            originalPosition = transform.position;
+            return true;
+        }
         
         // Kiểm tra xem có thể đặt hoặc merge không
         TetrisBlock mergeTarget = FindBlockToMerge(gridIdx, gridPos);
         
-        if (mergeTarget != null)
+        if (mergeTarget != null && mergeTarget != this) // Không merge với chính nó
         {
             // Merge với khối tìm thấy
             mergeTarget.MergeWith(this);
@@ -247,8 +295,16 @@ public class TetrisBlock : MonoBehaviour
             isPlaced = true;
             originalPosition = transform.position;
             
-            // Thêm Tower component để bắn
-            SpawnTower();
+            // Thêm Tower component để bắn (chỉ spawn nếu chưa có)
+            if (currentTower == null)
+            {
+                SpawnTower();
+            }
+            else
+            {
+                // Cập nhật vị trí tower nếu đã có
+                UpdateTowerAfterMerge();
+            }
             
             // Kiểm tra merge với các khối xung quanh
             CheckAndMerge();
