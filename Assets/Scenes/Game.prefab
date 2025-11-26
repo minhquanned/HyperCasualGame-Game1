@@ -1132,6 +1132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxTurns: 100
   itemsPerTurn: 3
+  winRewardMoney: 500
   grid: {fileID: 339215689341314562}
   playerBase: {fileID: 559672228782489610}
   itemSpawner: {fileID: 7462053244690513850}
@@ -1203,6 +1204,7 @@ MonoBehaviour:
   unavailableCellColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   cellNonGridPrefab: {fileID: 2744310705512840367, guid: 57dd2b36ddc99e74c83bb4a9c995273e, type: 3}
   pathCheckRadius: 0.5
+  spawnRadius: 3
 --- !u!1 &7614092194541612354
 GameObject:
   m_ObjectHideFlags: 0
@@ -1371,7 +1373,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 123123
+  m_text: 'Turn: 1/100'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1405,7 +1407,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
