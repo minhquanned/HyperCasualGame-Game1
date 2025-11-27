@@ -136,7 +136,24 @@ public partial class TetrisBlock
         // Cập nhật tower với level mới và vị trí mới
         UpdateTowerAfterMerge();
 
+        // Spawn particle effect lên cấp tại vị trí tower
+        SpawnLevelUpEffect();
+
         // Kiểm tra merge tiếp (nếu có khối khác cùng level mới)
         CheckAndMerge();
+    }
+
+    /// <summary>
+    /// Spawn particle effect khi lên cấp
+    /// </summary>
+    private void SpawnLevelUpEffect()
+    {
+        if (levelUpParticleEffectPrefab == null) return;
+
+        // Spawn tại vị trí tower (hoặc vị trí khối nếu không có tower)
+        Vector3 effectPosition = currentTower != null ? currentTower.transform.position : transform.position;
+
+        // Spawn particle effect
+        LevelUpParticleEffect.SpawnAt(levelUpParticleEffectPrefab, effectPosition);
     }
 }
