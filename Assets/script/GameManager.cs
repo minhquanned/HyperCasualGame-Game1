@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int maxTurns = 100;
     [SerializeField] private int itemsPerTurn = 3;
     [SerializeField] private int winRewardMoney = 500; // Tiền nhận được khi thắng game
-    
+
     [Header("References")]
     [SerializeField] private Grid grid;
     [SerializeField] private Base playerBase;
@@ -20,28 +20,28 @@ public class GameManager : MonoBehaviour
     [SerializeField] private EnemySpawner enemySpawner;
     [SerializeField] private GameObject tetrisBlockPrefab;
     [SerializeField] private Transform tetrisBlockParent;
-    
+
     [Header("UI")]
     [SerializeField] private TMPro.TextMeshProUGUI turnText;
     [SerializeField] private TMPro.TextMeshProUGUI gameOverText;
     [SerializeField] private UnityEngine.UI.Button nextTurnButton;
-    
+
     [Header("Events")]
     public UnityEvent<int> OnTurnChanged;
     public UnityEvent OnGameWon;
     public UnityEvent OnGameLost;
-    
+
     private int currentTurn = 1;
     private bool isGameActive = false;
     private bool isPlayerTurn = true; // Phase người chơi đặt item
     private List<GameObject> currentTurnSpawnedObjects = new List<GameObject>(); // TetrisBlock hoặc BlockExpandGrid
     private List<TetrisBlock> placedBlocks = new List<TetrisBlock>();
-    
+
     private void Start()
     {
         InitializeGame();
     }
-    
+
     /// <summary>
     /// Khởi tạo game
     /// </summary>
@@ -51,89 +51,89 @@ public class GameManager : MonoBehaviour
         if (playerBase == null) playerBase = FindFirstObjectByType<Base>();
         if (itemSpawner == null) itemSpawner = FindFirstObjectByType<ItemSpawner>();
         if (enemySpawner == null) enemySpawner = FindFirstObjectByType<EnemySpawner>();
-        
+
         // Subscribe events
         if (playerBase != null)
         {
             playerBase.OnBaseDestroyed.AddListener(OnBaseDestroyed);
         }
-        
+
         if (nextTurnButton != null)
         {
             nextTurnButton.onClick.AddListener(EndPlayerPhase);
         }
-        
+
         isGameActive = true;
         StartNewTurn();
     }
-    
+
     /// <summary>
     /// Bắt đầu turn mới
     /// </summary>
     private void StartNewTurn()
     {
         if (!isGameActive) return;
-        
+
         // Kiểm tra win condition
         if (currentTurn > maxTurns)
         {
             WinGame();
             return;
         }
-        
+
         // Cập nhật UI
         UpdateTurnUI();
         OnTurnChanged?.Invoke(currentTurn);
-        
+
         // Phase 1: Người chơi nhận item và đặt
         StartPlayerPhase();
     }
-    
+
     /// <summary>
     /// Phase người chơi: nhận prefab và đặt
     /// </summary>
     private void StartPlayerPhase()
     {
         isPlayerTurn = true;
-        
+
         // Xóa prefab turn trước (nếu còn)
         ClearPreviousTurnObjects();
-        
+
         // Spawn prefab mới (TetrisBlock hoặc BlockExpandGrid)
         if (itemSpawner != null)
         {
             currentTurnSpawnedObjects = itemSpawner.SpawnItems(itemsPerTurn);
         }
-        
+
         // Enable button next turn
         if (nextTurnButton != null)
         {
             nextTurnButton.interactable = true;
         }
     }
-    
+
     /// <summary>
     /// Kết thúc phase người chơi, bắt đầu phase quái
     /// </summary>
     public void EndPlayerPhase()
     {
         if (!isPlayerTurn) return;
-        
+
         isPlayerTurn = false;
-        
+
         // Xóa các prefab chưa dùng (chưa placed)
         ClearUnusedObjects();
-        
+
         // Disable button
         if (nextTurnButton != null)
         {
             nextTurnButton.interactable = false;
         }
-        
+
         // Bắt đầu phase quái
         StartEnemyPhase();
     }
-    
+
     /// <summary>
     /// Phase quái: spawn và di chuyển
     /// </summary>
@@ -144,25 +144,35 @@ public class GameManager : MonoBehaviour
         {
             enemySpawner.SpawnEnemiesForTurn(currentTurn);
         }
-        
+
         // Đợi turn kết thúc
         StartCoroutine(WaitForTurnEnd());
     }
-    
+
     /// <summary>
     /// Đợi turn kết thúc
     /// </summary>
     private IEnumerator WaitForTurnEnd()
     {
+        // Đợi enemy spawning xong trước
+        if (enemySpawner != null)
+        {
+            while (enemySpawner.IsSpawning())
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        // Sau đó đợi tất cả enemy bị tiêu diệt
         bool isEnemyRemaining = true;
 
-        while(isEnemyRemaining)
+        while (isEnemyRemaining)
         {
             isEnemyRemaining = false;
             Enemy[] allEnemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
             foreach (Enemy enemy in allEnemies)
             {
-                if(enemy != null && enemy.IsAlive())
+                if (enemy != null && enemy.IsAlive())
                 {
                     isEnemyRemaining = true;
                 }
@@ -174,33 +184,33 @@ public class GameManager : MonoBehaviour
         currentTurn++;
         StartNewTurn();
     }
-    
+
     /// <summary>
     /// Spawn khối Tetris (từ item) - UI Canvas
     /// </summary>
     public void SpawnTetrisBlock(TetrisBlockType blockType)
     {
         if (tetrisBlockPrefab == null) return;
-        
+
         // Spawn trong UI Canvas (cần parent là Canvas hoặc Grid)
         GameObject blockObj = Instantiate(tetrisBlockPrefab, tetrisBlockParent);
-        
+
         TetrisBlock block = blockObj.GetComponent<TetrisBlock>();
         if (block != null)
         {
             block.Initialize(blockType, 1); // Level 1 ban đầu
-            
+
             // Đặt vị trí spawn (có thể là vị trí item hoặc vị trí spawn area)
             // RectTransform blockRect = blockObj.GetComponent<RectTransform>();
             // if (blockRect != null && grid != null)
             // {
             //     blockRect.anchoredPosition = grid.GridToUIPosition(Vector2Int.zero);
             // }
-            
+
             placedBlocks.Add(block);
         }
     }
-    
+
     /// <summary>
     /// Xóa prefab turn trước
     /// </summary>
@@ -215,7 +225,7 @@ public class GameManager : MonoBehaviour
         }
         currentTurnSpawnedObjects.Clear();
     }
-    
+
     /// <summary>
     /// Xóa các prefab chưa được sử dụng (chưa placed hoặc chưa used)
     /// </summary>
@@ -230,7 +240,7 @@ public class GameManager : MonoBehaviour
                 Destroy(block.gameObject);
             }
         }
-        
+
         // Xóa BlockExpandGrid chưa used
         BlockExpandGrid[] allExpands = FindObjectsByType<BlockExpandGrid>(FindObjectsSortMode.None);
         foreach (BlockExpandGrid expand in allExpands)
@@ -240,10 +250,10 @@ public class GameManager : MonoBehaviour
                 Destroy(expand.gameObject);
             }
         }
-        
+
         currentTurnSpawnedObjects.Clear();
     }
-    
+
     /// <summary>
     /// Cập nhật UI turn
     /// </summary>
@@ -254,7 +264,7 @@ public class GameManager : MonoBehaviour
             turnText.text = $"Turn: {currentTurn}/{maxTurns}";
         }
     }
-    
+
     /// <summary>
     /// Thành bị phá hủy
     /// </summary>
@@ -262,7 +272,7 @@ public class GameManager : MonoBehaviour
     {
         LoseGame();
     }
-    
+
     /// <summary>
     /// Thắng game
     /// </summary>
@@ -274,16 +284,15 @@ public class GameManager : MonoBehaviour
             gameOverText.text = "Victory!";
             gameOverText.gameObject.SetActive(true);
         }
-        
-        // Thêm tiền khi thắng game
+
         if (TowerDataManager.Instance != null)
         {
             TowerDataManager.Instance.AddMoney(winRewardMoney);
         }
-        
+
         OnGameWon?.Invoke();
     }
-    
+
     /// <summary>
     /// Thua game
     /// </summary>
@@ -297,7 +306,7 @@ public class GameManager : MonoBehaviour
         }
         OnGameLost?.Invoke();
     }
-    
+
     // Getters
     public int GetCurrentTurn() => currentTurn;
     public bool IsGameActive() => isGameActive;

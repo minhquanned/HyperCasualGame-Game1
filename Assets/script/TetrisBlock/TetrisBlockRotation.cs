@@ -79,8 +79,16 @@ public partial class TetrisBlock
                 lastValidGridIndex = gridIndex;
                 lastValidShape = oldShape;
                 lastValidRotationIndex = oldRotationIndex;
+
+                // Re-occupy cells với shape cũ để grid vẫn track được tower này
+                grid.OccupyCells(gridIndex, gridPosition, oldShape);
             }
-            // Nếu đã trong ghost state rồi, không cập nhật lastValid* (giữ nguyên vị trí valid cuối cùng)
+            else
+            {
+                // Nếu đã trong ghost state, cho phép xoay tiếp bằng cách re-occupy cells với shape mới
+                // (không cần free vì đã không occupy từ trước)
+                grid.OccupyCells(gridIndex, gridPosition, currentShape);
+            }
 
             EnterGhostState();
         }

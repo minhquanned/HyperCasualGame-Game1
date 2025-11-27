@@ -11,19 +11,20 @@ public class Tower : MonoBehaviour
     [SerializeField] private float baseDamage = 10f;
     [SerializeField] private float baseRange = 5f; // World units trong 3D
     [SerializeField] private float baseFireRate = 1f; // Bắn mỗi X giây
-    
+
     [Header("Level Scaling")]
     [SerializeField] private float damagePerLevel = 5f;
     [SerializeField] private float rangePerLevel = 1f;
     [SerializeField] private float fireRatePerLevel = 0.1f; // Giảm thời gian giữa các lần bắn
-    
+
     [Header("Projectile")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform firePoint;
-    
+
     [Header("Visual")]
     [SerializeField] private LineRenderer rangeIndicator; // LineRenderer để hiển thị phạm vi
-  
+    [SerializeField] private Transform gunBarrel; // Nòng súng - chỉ xoay object này
+
     private int level = 1;
     private float currentDamage;
     private float currentRange;
@@ -39,14 +40,14 @@ public class Tower : MonoBehaviour
             firePoint = transform;
         }
     }
-    
+
     private void Start()
     {
         LoadStatsFromData();
         UpdateStats();
         UpdateRangeIndicator();
     }
-    
+
     /// <summary>
     /// Load stats từ local data khi tower spawn
     /// </summary>
@@ -66,7 +67,7 @@ public class Tower : MonoBehaviour
             }
         }
     }
-    
+
     private void Update()
     {
         UpdateTarget();
@@ -74,14 +75,14 @@ public class Tower : MonoBehaviour
         {
             RotateToTarget();
         }
-        
+
         if (currentTarget != null && Time.time >= lastFireTime + currentFireRate)
         {
             Fire();
             lastFireTime = Time.time;
         }
     }
-    
+
     /// <summary>
     /// Cập nhật stats theo level
     /// </summary>
@@ -91,18 +92,18 @@ public class Tower : MonoBehaviour
         currentRange = baseRange + (level - 1) * rangePerLevel;
         currentFireRate = Mathf.Max(0.1f, baseFireRate - (level - 1) * fireRatePerLevel);
     }
-    
+
     /// <summary>
     /// Cập nhật target (quái vật gần nhất trong phạm vi) - 3D
     /// </summary>
     private void UpdateTarget()
     {
         enemiesInRange.Clear();
-        
+
         // Tìm tất cả quái vật trong phạm vi bằng cách duyệt tất cả Enemy
         Enemy[] allEnemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
         Vector3 towerPos = transform.position;
-        
+
         foreach (Enemy enemy in allEnemies)
         {
             if (enemy != null && enemy.IsAlive())
@@ -114,13 +115,13 @@ public class Tower : MonoBehaviour
                 }
             }
         }
-        
+
         // Chọn target gần nhất
         if (enemiesInRange.Count > 0)
         {
             Enemy closest = null;
             float closestDistance = float.MaxValue;
-            
+
             foreach (Enemy enemy in enemiesInRange)
             {
                 float distance = Vector3.Distance(towerPos, enemy.transform.position);
@@ -130,7 +131,7 @@ public class Tower : MonoBehaviour
                     closest = enemy;
                 }
             }
-            
+
             currentTarget = closest;
         }
         else
@@ -138,24 +139,24 @@ public class Tower : MonoBehaviour
             currentTarget = null;
         }
     }
-    
+
     /// <summary>
     /// Bắn đạn
     /// </summary>
     private void Fire()
     {
         if (currentTarget == null || projectilePrefab == null) return;
-        
+
         // Tạo projectile trong 3D space
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
-        
+
         Projectile projScript = projectile.GetComponent<Projectile>();
         if (projScript != null)
         {
             projScript.Initialize(currentTarget, currentDamage);
         }
     }
-    
+
     /// <summary>
     /// Cập nhật level (khi merge)
     /// </summary>
@@ -165,7 +166,7 @@ public class Tower : MonoBehaviour
         UpdateStats();
         UpdateRangeIndicator();
     }
-    
+
     /// <summary>
     /// Hiển thị phạm vi bắn (LineRenderer)
     /// </summary>
@@ -176,7 +177,7 @@ public class Tower : MonoBehaviour
             int segments = 32;
             rangeIndicator.positionCount = segments + 1;
             rangeIndicator.useWorldSpace = true;
-            
+
             for (int i = 0; i <= segments; i++)
             {
                 float angle = (float)i / segments * 360f * Mathf.Deg2Rad;
@@ -192,18 +193,24 @@ public class Tower : MonoBehaviour
     {
         if (currentTarget == null) return;
 
-        // Lấy vị trí tower và enemy trong 3D
-        Vector3 towerPos = transform.position;
+        // Nếu không có gunBarrel được assign, không làm gì
+        if (gunBarrel == null) return;
+
+        // Lấy vị trí gunBarrel và enemy trong 3D
+        Vector3 gunPos = gunBarrel.position;
         Vector3 enemyPos = currentTarget.transform.position;
 
         // Tính hướng (vector)
-        Vector3 dir = enemyPos - towerPos;
+        Vector3 dir = enemyPos - gunPos;
         dir.y = 0; // Chỉ xoay trên mặt phẳng XZ
 
-        // Xoay tower về phía target
+        // Xoay nòng súng về phía target - chỉ rotation Y
         if (dir != Vector3.zero)
         {
-            transform.rotation = Quaternion.LookRotation(dir);
+            Quaternion targetRotation = Quaternion.LookRotation(dir);
+            // Giữ nguyên X và Z, chỉ thay đổi Y
+            Vector3 currentEuler = gunBarrel.eulerAngles;
+            gunBarrel.eulerAngles = new Vector3(currentEuler.x, targetRotation.eulerAngles.y, currentEuler.z);
         }
     }
 

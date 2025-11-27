@@ -34,6 +34,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float speedIncreasePerTurn = 1.2f;
 
     private int currentTurn = 1;
+    private bool isSpawning = false;
 
 
     // ====================================================================== //
@@ -47,6 +48,14 @@ public class EnemySpawner : MonoBehaviour
     {
         currentTurn = turnNumber;
         StartCoroutine(SpawnEnemiesCoroutine());
+    }
+
+    /// <summary>
+    /// Kiểm tra xem đang spawn enemy hay không
+    /// </summary>
+    public bool IsSpawning()
+    {
+        return isSpawning;
     }
 
 
@@ -81,12 +90,20 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator SpawnEnemiesCoroutine()
     {
+        isSpawning = true;
+
         if (enemyPrefab == null || pathManager == null)
+        {
+            isSpawning = false;
             yield break;
+        }
 
         List<Vector3> waypoints = pathManager.GetWaypoints();
         if (waypoints == null || waypoints.Count == 0)
+        {
+            isSpawning = false;
             yield break;
+        }
 
         int enemyCount = GetEnemyCount(currentTurn);
         float HP = GetEnemyHealth(currentTurn);
@@ -112,5 +129,7 @@ public class EnemySpawner : MonoBehaviour
 
             yield return new WaitForSeconds(spawnInterval);
         }
+
+        isSpawning = false;
     }
 }

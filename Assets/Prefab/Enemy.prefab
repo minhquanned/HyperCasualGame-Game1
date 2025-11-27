@@ -49,6 +49,7 @@ MonoBehaviour:
   maxHealth: 1
   moveSpeed: 1
   damageToBase: 1
+  moneyReward: 10
   healthSlider: {fileID: 4281714721971567356}
 --- !u!1 &1339985369613635666
 GameObject:

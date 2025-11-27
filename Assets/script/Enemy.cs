@@ -82,7 +82,7 @@ public class Enemy : MonoBehaviour
 
         Vector3 direction = (targetWaypoint - transform.position).normalized;
         transform.position += direction * moveSpeed * Time.deltaTime;
-        
+
         // Xoay enemy về phía đang di chuyển
         if (direction != Vector3.zero)
         {
@@ -107,13 +107,12 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         isMoving = false;
-        
-        // Thêm tiền khi kill enemy
+
         if (TowerDataManager.Instance != null)
         {
             TowerDataManager.Instance.AddMoney(moneyReward);
         }
-        
+
         Destroy(gameObject);
     }
 

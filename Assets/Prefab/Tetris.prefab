@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockType: 0
   level: 1
-  towerPrefab: {fileID: 1636152372478545940, guid: 5894489617d9f114c84f93215304a571, type: 3}
+  towerPrefab: {fileID: 4452566114931452614, guid: 6c199cb1bfe14c64ca5842a87a582cdf, type: 3}
   levelText: {fileID: 0}
   blockCellPrefab: {fileID: 3627897200217589422, guid: 46590b605470c6a4db97a00a0efdad33, type: 3}
   cellContainer: {fileID: 5249803083595688555}

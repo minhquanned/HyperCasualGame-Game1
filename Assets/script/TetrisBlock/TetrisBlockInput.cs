@@ -51,14 +51,14 @@ public partial class TetrisBlock
         if (Physics.Raycast(ray, out hit))
         {
             if (hit.collider.gameObject == gameObject
-                || hit.collider.transform.parent.gameObject == gameObject)
+                || (hit.collider.transform.parent != null && hit.collider.transform.parent.gameObject == gameObject))
             {
                 pointerDownTime = Time.time;
 
                 // Không restore khi click vào chính tower này
                 // Cho phép tap để xoay tiếp hoặc drag
 
-                if (hit.collider.transform.parent.gameObject == gameObject)
+                if (hit.collider.transform.parent != null && hit.collider.transform.parent.gameObject == gameObject)
                 {
                     offsetDrag = hit.collider.transform.position - transform.position;
                 }
@@ -67,15 +67,32 @@ public partial class TetrisBlock
                 dragPlane = new Plane(Vector3.up, transform.position);
 
                 // Nếu block đã đặt, lưu thông tin và giải phóng cells
-                if (isPlaced && grid != null && !isGhostState)
+                if (isPlaced && grid != null)
                 {
                     wasPlacedBeforeDrag = true;
                     savedGridIndex = gridIndex;
                     savedGridPosition = gridPosition;
-                    savedShape = currentShape;
+
+                    // Nếu đang trong ghost state, dùng lastValidShape, nếu không dùng currentShape
+                    savedShape = isGhostState ? lastValidShape : currentShape;
 
                     // Giải phóng cells để có thể di chuyển
-                    grid.FreeCells(gridIndex, gridPosition, currentShape);
+                    // Trong ghost state, cells đang được occupy bởi lastValidShape
+                    BlockShape shapeToFree = isGhostState ? lastValidShape : currentShape;
+                    grid.FreeCells(gridIndex, gridPosition, shapeToFree);
+
+                    // Nếu đang ghost state, thoát ghost state trước khi drag
+                    if (isGhostState)
+                    {
+                        // Restore về shape hợp lệ trước khi drag
+                        rotationIndex = lastValidRotationIndex;
+                        currentShape = lastValidShape;
+                        UpdateVisual();
+                        UpdateTowerPosition();
+                        SetNormalAlpha();
+                        isGhostState = false;
+                    }
+
                     isPlaced = false; // Tạm thời đánh dấu chưa đặt để có thể di chuyển
 
                     // Hiển thị delete zone khi bắt đầu drag block đã đặt
