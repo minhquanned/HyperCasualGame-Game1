@@ -13,6 +13,7 @@ public partial class TetrisBlock : MonoBehaviour
 
     [Header("Tower")]
     [SerializeField] private GameObject towerPrefab;
+    [SerializeField] private GameObject levelUpParticleEffectPrefab; // Particle effect khi lên cấp
 
     [Header("Visual")]
     [SerializeField] private TMPro.TextMeshProUGUI levelText; // Hiển thị level (3D)
