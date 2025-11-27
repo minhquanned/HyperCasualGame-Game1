@@ -155,7 +155,7 @@ public class UIUpgradeTower : MonoBehaviour
         // Cập nhật tiền
         if (moneyText != null)
         {
-            moneyText.text = $"Tiền: {dataManager.GetMoney()}";
+            moneyText.text = $"{dataManager.GetMoney()}";
         }
 
         // Cập nhật Base Damage
