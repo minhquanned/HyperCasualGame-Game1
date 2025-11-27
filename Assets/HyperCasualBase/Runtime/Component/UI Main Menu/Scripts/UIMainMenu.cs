@@ -8,9 +8,11 @@ public class UIMainMenu : MonoBehaviour
     [SerializeField] private Button buttonPlay;
     [SerializeField] private Button buttonSetting;
     [SerializeField] private Button buttonGuide;
+    [SerializeField] private Button buttonShop;
 
     [SerializeField] private UIPopupGuide uIPopupGuide;
     [SerializeField] private UIPopupSetting uIPopupSetting;
+    [SerializeField] private UIPopupShop uIPopupShop;
 
     private void Start()
     {
@@ -27,6 +29,11 @@ public class UIMainMenu : MonoBehaviour
         if (buttonSetting != null)
         {
             buttonSetting.onClick.AddListener(OnSettingClicked);
+        }
+
+        if (buttonShop != null)
+        {
+            buttonShop.onClick.AddListener(OnShopClicked);
         }
 
         if (buttonGuide != null)
@@ -48,6 +55,12 @@ public class UIMainMenu : MonoBehaviour
         uIPopupSetting.Show();
     }
 
+    private void OnShopClicked()
+    {
+        EventBus.Publish(new OnShopClicked());
+        uIPopupShop.Show();
+    }
+
     private void OnGuideClicked()
     {
         EventBus.Publish(new OnGuideClicked());
@@ -57,5 +70,6 @@ public class UIMainMenu : MonoBehaviour
 
 public struct OnPlayClicked { }
 public struct OnSettingClicked { }
+public struct OnShopClicked { }
 public struct OnGuideClicked { }
 

@@ -13,12 +13,12 @@ public class UIPopupSetting : BasePopup
     protected override void Awake()
     {
         base.Awake();
-        LoadUI();
         AddListeners();
     }
 
     void OnEnable()
     {
+        LoadUI();
         buttonClose.onClick.AddListener(OnClickButtonClose);
     }
 
