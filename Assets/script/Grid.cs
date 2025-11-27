@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 /// <summary>
 /// Quản lý grid 3D, các ô, và mở rộng grid
@@ -95,6 +98,24 @@ public class Grid : MonoBehaviour
     }
     
     /// <summary>
+    /// Đánh dấu GameObject là static để giảm drawcall
+    /// </summary>
+    private void SetGameObjectStatic(GameObject obj)
+    {
+        if (obj == null) return;
+        
+#if UNITY_EDITOR
+        // Trong Editor, sử dụng StaticEditorFlags để đánh dấu static
+        // Chỉ sử dụng các flags cần thiết cho batching và lighting
+        StaticEditorFlags flags = StaticEditorFlags.ContributeGI | StaticEditorFlags.OccluderStatic | StaticEditorFlags.BatchingStatic | StaticEditorFlags.OccludeeStatic | StaticEditorFlags.ReflectionProbeStatic;
+        GameObjectUtility.SetStaticEditorFlags(obj, flags);
+#else
+        // Trong runtime/build, chỉ set isStatic flag
+        obj.isStatic = true;
+#endif
+    }
+    
+    /// <summary>
     /// Spawn các cellNonGrid (đất liền) xung quanh các grid cells
     /// </summary>
     private void SpawnNonGridCells()
@@ -145,6 +166,7 @@ public class Grid : MonoBehaviour
                         GameObject nonGridCell = Instantiate(cellNonGridPrefab, transform);
                         nonGridCell.transform.position = nonGridPos;
                         nonGridCell.transform.localScale = new Vector3(cellSize, cellSize, 0.5f);
+                        SetGameObjectStatic(nonGridCell); // Đánh dấu static để giảm drawcall
                         cellNonGrids[nonGridPos] = nonGridCell;
                     }
                 }
@@ -675,6 +697,7 @@ public class Grid : MonoBehaviour
                 GameObject nonGridCell = Instantiate(cellNonGridPrefab, transform);
                 nonGridCell.transform.position = nonGridPos;
                 nonGridCell.transform.localScale = new Vector3(cellSize, cellSize, 1f);
+                SetGameObjectStatic(nonGridCell); // Đánh dấu static để giảm drawcall
                 cellNonGrids[nonGridPos] = nonGridCell;
             }
         }

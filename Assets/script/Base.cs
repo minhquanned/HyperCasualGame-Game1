@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 
 /// <summary>
@@ -12,6 +13,7 @@ public class Base : MonoBehaviour
     
     [Header("Visual")]
     [SerializeField] private TMPro.TextMeshPro healthText; // 3D text
+    [SerializeField] private Slider healthSlider; // UI Slider để hiển thị thanh máu
     // Health bar có thể dùng 3D Canvas hoặc Billboard
     
     [Header("Events")]
@@ -21,6 +23,15 @@ public class Base : MonoBehaviour
     private void Start()
     {
         currentHealth = maxHealth;
+        
+        // Khởi tạo slider nếu có
+        if (healthSlider != null)
+        {
+            healthSlider.minValue = 0f;
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = maxHealth;
+        }
+        
         UpdateHealthDisplay();
     }
     
@@ -57,9 +68,16 @@ public class Base : MonoBehaviour
     /// </summary>
     private void UpdateHealthDisplay()
     {
+        // Cập nhật text
         if (healthText != null)
         {
             healthText.text = $"{Mathf.CeilToInt(currentHealth)}/{Mathf.CeilToInt(maxHealth)}";
+        }
+        
+        // Cập nhật slider
+        if (healthSlider != null)
+        {
+            healthSlider.value = currentHealth;
         }
     }
     
@@ -88,6 +106,13 @@ public class Base : MonoBehaviour
     {
         maxHealth = newMaxHealth;
         currentHealth = maxHealth;
+        
+        // Cập nhật slider max value
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+        }
+        
         UpdateHealthDisplay();
     }
 }

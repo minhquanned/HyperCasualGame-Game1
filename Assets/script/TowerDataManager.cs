@@ -62,7 +62,7 @@ public class TowerDataManager : MonoBehaviour
         if (towerData == null)
         {
             // Tạo dữ liệu mặc định
-            towerData = new TowerUpgradeData(10f, 5f, 1f, 5f, 1f, 0.1f);
+            towerData = new TowerUpgradeData(0.2f, 5f, 1f, 1f, 1f, 0.1f);
             SaveTowerData();
         }
     }

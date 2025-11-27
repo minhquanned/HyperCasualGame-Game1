@@ -106,8 +106,8 @@ public partial class TetrisBlock
         // Đảm bảo khối này là khối được giữ lại (khối đã đặt trên grid)
         // Khối otherBlock sẽ bị xóa
 
-        // Tăng level
-        int newLevel = level + 1;
+        // Tăng level (clamp ở mức tối đa 9)
+        int newLevel = Mathf.Clamp(level + 1, 1, 9);
 
         // Lưu lại thông tin
         Grid.GridIndex thisGridIdx = gridIndex;
@@ -121,9 +121,8 @@ public partial class TetrisBlock
         grid.FreeCells(thisGridIdx, thisPos, thisShape);
         grid.FreeCells(otherGridIdx, otherPos, otherShape);
 
-        // Khởi tạo lại khối này với level mới
-        level = newLevel;
-        UpdateLevelDisplay();
+        // Khởi tạo lại khối này với level mới (sử dụng SetLevel để đảm bảo clamp và cập nhật tower)
+        SetLevel(newLevel);
 
         // Không cần cập nhật visual vì màu giữ nguyên theo type, chỉ levelText thay đổi
 

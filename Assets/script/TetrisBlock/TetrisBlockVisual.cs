@@ -50,6 +50,15 @@ public partial class TetrisBlock
                     mr.material.color = blockColor;
                     cachedCellRenderers.Add(mr);
                 }
+                else 
+                {
+                    MeshRenderer mrChild = cellObj.GetComponentInChildren<MeshRenderer>();
+                    if (mrChild != null && mrChild.material != null)
+                    {
+                        mrChild.material.color = blockColor;
+                        cachedCellRenderers.Add(mrChild);
+                    }
+                }
             }
 
             spawnedBlockCells.Add(cellObj);

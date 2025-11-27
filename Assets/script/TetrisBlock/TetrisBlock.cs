@@ -119,7 +119,7 @@ public partial class TetrisBlock : MonoBehaviour
     public void Initialize(TetrisBlockType type, int initialLevel = 1)
     {
         blockType = type;
-        level = initialLevel;
+        level = Mathf.Clamp(initialLevel, 1, 9);
         currentShape = TetrisBlockShapes.GetShape(blockType);
         UpdateVisual();
         UpdateLevelDisplay();
@@ -201,9 +201,23 @@ public partial class TetrisBlock : MonoBehaviour
         return PlaceBlock(Grid.GridIndex.Grid1, gridPos, worldPos);
     }
 
-    // Getters
+    // Getters & Setters
     public TetrisBlockType GetBlockType() => blockType;
     public int GetLevel() => level;
+    
+    /// <summary>
+    /// Set level với clamp tự động (1-9)
+    /// </summary>
+    public void SetLevel(int newLevel)
+    {
+        level = Mathf.Clamp(newLevel, 1, 9);
+        UpdateLevelDisplay();
+        if (currentTower != null)
+        {
+            currentTower.SetLevel(level);
+        }
+    }
+    
     public BlockShape GetShape() => currentShape;
     public Vector2Int GetGridPosition() => gridPosition;
     public bool IsPlaced() => isPlaced;

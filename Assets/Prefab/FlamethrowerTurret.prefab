@@ -95,10 +95,18 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -3921274220341356889, guid: 49db897cf7805ea4d9f6c6f279279e49, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f40374df1027f054eabe8aa0253e618d, type: 2}
     - target: {fileID: -3538901599608609491, guid: 49db897cf7805ea4d9f6c6f279279e49, type: 3}
       propertyPath: m_LocalPosition.y
       value: 2.2
       objectReference: {fileID: 0}
+    - target: {fileID: -3300651797594345220, guid: 49db897cf7805ea4d9f6c6f279279e49, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f40374df1027f054eabe8aa0253e618d, type: 2}
     - target: {fileID: -51407533272706012, guid: 49db897cf7805ea4d9f6c6f279279e49, type: 3}
       propertyPath: m_LocalPosition.y
       value: 1.399812
@@ -159,6 +167,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3674283768898232849, guid: 49db897cf7805ea4d9f6c6f279279e49, type: 3}
   m_PrefabInstance: {fileID: 3534156495373670295}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &1916018630060342635 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -6080765144682075396, guid: 49db897cf7805ea4d9f6c6f279279e49, type: 3}
+  m_PrefabInstance: {fileID: 3534156495373670295}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4452566114931452614 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 49db897cf7805ea4d9f6c6f279279e49, type: 3}
@@ -176,13 +189,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 860d0de09f6e47046a8f6f38fefbb72d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseDamage: 0.2
-  baseRange: 2000
-  baseFireRate: 1
-  damagePerLevel: 1
-  rangePerLevel: 50
-  fireRatePerLevel: 0.1
+  baseDamage: 0
+  baseRange: 0
+  baseFireRate: 0
+  damagePerLevel: 0
+  rangePerLevel: 0
+  fireRatePerLevel: 0
   projectilePrefab: {fileID: 898296319597508209, guid: 3c3747211ce0d324c8a47a914d663e5a, type: 3}
   firePoint: {fileID: 6969820240599568992}
   rangeIndicator: {fileID: 0}
   gunBarrel: {fileID: 285544292704499078}
+  towerRenderers:
+  - {fileID: 1916018630060342635}
+  - {fileID: 7150135346401994603}
+  - {fileID: 8691680394825367856}
+--- !u!23 &7150135346401994603 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -3300651797594345220, guid: 49db897cf7805ea4d9f6c6f279279e49, type: 3}
+  m_PrefabInstance: {fileID: 3534156495373670295}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8691680394825367856 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -3921274220341356889, guid: 49db897cf7805ea4d9f6c6f279279e49, type: 3}
+  m_PrefabInstance: {fileID: 3534156495373670295}
+  m_PrefabAsset: {fileID: 0}
