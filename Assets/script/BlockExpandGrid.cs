@@ -7,17 +7,18 @@ public class BlockExpandGrid : MonoBehaviour
 {
     [Header("Visual")]
     [SerializeField] private TMPro.TextMeshPro expandText; // 3D text
-    
+    [SerializeField] private ParticleSystem particleEffectPrefab; // Particle effect khi sử dụng
+
     [Header("Input")]
     [SerializeField] private Camera mainCamera;
     [SerializeField] private LayerMask gridLayerMask = -1;
     [SerializeField] private LayerMask nonGridLayerMask = -1; // Layer mask cho cellNonGrid
-    
+
     private Vector3 originalPosition;
     private bool isDragging = false;
     private bool isUsed = false;
     private Plane dragPlane;
-    
+
     private void Awake()
     {
         if (mainCamera == null)
@@ -26,7 +27,7 @@ public class BlockExpandGrid : MonoBehaviour
         }
         dragPlane = new Plane(Vector3.up, transform.position);
     }
-    
+
     private void Start()
     {
         originalPosition = transform.position;
@@ -35,14 +36,14 @@ public class BlockExpandGrid : MonoBehaviour
             expandText.text = "Expand";
         }
     }
-    
+
     private void Update()
     {
         if (isUsed) return;
-        
+
         HandleInput();
     }
-    
+
     private void HandleInput()
     {
         // Mouse input
@@ -59,14 +60,14 @@ public class BlockExpandGrid : MonoBehaviour
             OnPointerUp();
         }
     }
-    
+
     private void OnPointerDown()
     {
         if (isUsed) return;
-        
+
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        
+
         if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject)
         {
             isDragging = true;
@@ -74,31 +75,31 @@ public class BlockExpandGrid : MonoBehaviour
             dragPlane = new Plane(Vector3.up, transform.position);
         }
     }
-    
+
     private void OnDrag()
     {
         if (isUsed || !isDragging) return;
-        
+
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         float distance;
-        
+
         if (dragPlane.Raycast(ray, out distance))
         {
             Vector3 hitPoint = ray.GetPoint(distance);
             transform.position = hitPoint;
         }
     }
-    
+
     private void OnPointerUp()
     {
         if (isUsed || !isDragging) return;
-        
+
         isDragging = false;
-        
+
         // Kiểm tra xem có thả vào grid hoặc cellNonGrid không
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        
+
         Grid grid = FindFirstObjectByType<Grid>();
         if (grid != null)
         {
@@ -110,6 +111,9 @@ public class BlockExpandGrid : MonoBehaviour
                 // Method này sẽ tự động xóa cellNonGrid nếu có
                 if (grid.ExpandGridAtWorldPosition(hit.point, 1))
                 {
+                    // Spawn particle effect tại vị trí này
+                    SpawnParticleEffect(hit.point);
+
                     // Xóa block sau khi dùng
                     isUsed = true;
                     Destroy(gameObject);
@@ -117,11 +121,33 @@ public class BlockExpandGrid : MonoBehaviour
                 }
             }
         }
-        
+
         // Nếu không thả vào grid hoặc không mở rộng được, quay về vị trí ban đầu
         transform.position = originalPosition;
     }
-    
+
+    /// <summary>
+    /// Spawn particle effect tại vị trí sử dụng block
+    /// </summary>
+    private void SpawnParticleEffect(Vector3 position)
+    {
+        if (particleEffectPrefab != null)
+        {
+            // Tạo particle tại vị trí
+            ParticleSystem particleInstance = Instantiate(particleEffectPrefab, position, Quaternion.identity);
+
+            // Disable looping để đảm bảo chỉ chạy 1 lần
+            var main = particleInstance.main;
+            main.loop = false;
+
+            // Play particle
+            particleInstance.Play();
+
+            // Tự động destroy sau khi particle chạy xong (duration only, không cần thêm lifetime)
+            Destroy(particleInstance.gameObject, particleInstance.main.duration);
+        }
+    }
+
     /// <summary>
     /// Kiểm tra đã được sử dụng chưa
     /// </summary>

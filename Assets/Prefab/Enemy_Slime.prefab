@@ -779,6 +779,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 847964701365928663, guid: 46a0c734995aefd4da992d145d9228f9, type: 3}
+      propertyPath: m_fontSize
+      value: 34.85
+      objectReference: {fileID: 0}
+    - target: {fileID: 847964701365928663, guid: 46a0c734995aefd4da992d145d9228f9, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d2d1aeb954629457095df6b4603312c4, type: 2}
+    - target: {fileID: 847964701365928663, guid: 46a0c734995aefd4da992d145d9228f9, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 8239769997508639612, guid: d2d1aeb954629457095df6b4603312c4, type: 2}
+    - target: {fileID: 847964701365928663, guid: 46a0c734995aefd4da992d145d9228f9, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1856120591790402323, guid: 46a0c734995aefd4da992d145d9228f9, type: 3}
       propertyPath: m_Name
       value: Canvas_MoneyPopup

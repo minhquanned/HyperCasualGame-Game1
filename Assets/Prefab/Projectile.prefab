@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10.17
   lifetime: 5
+  hitParticleEffectPrefab: {fileID: 484368387861551534, guid: a8e8bff5aa4955b408519cabb3ee88fb, type: 3}
 --- !u!1 &6154601542118712342
 GameObject:
   m_ObjectHideFlags: 0
