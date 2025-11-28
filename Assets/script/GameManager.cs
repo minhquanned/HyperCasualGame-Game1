@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI turnText;
     [SerializeField] private TMPro.TextMeshProUGUI gameOverText;
     [SerializeField] private UnityEngine.UI.Button nextTurnButton;
+    [SerializeField] private ResultUI resultUI; // Màn hình kết thúc
 
     [Header("Events")]
     public UnityEvent<int> OnTurnChanged;
@@ -279,12 +280,19 @@ public class GameManager : MonoBehaviour
     private void WinGame()
     {
         isGameActive = false;
-        if (gameOverText != null)
+
+        // Hiển thị màn hình thắng
+        if (resultUI != null)
+        {
+            resultUI.ShowWin();
+        }
+        else if (gameOverText != null)
         {
             gameOverText.text = "Victory!";
             gameOverText.gameObject.SetActive(true);
         }
 
+        // Thêm tiền thưởng
         if (TowerDataManager.Instance != null)
         {
             TowerDataManager.Instance.AddMoney(winRewardMoney);
@@ -299,11 +307,18 @@ public class GameManager : MonoBehaviour
     private void LoseGame()
     {
         isGameActive = false;
-        if (gameOverText != null)
+
+        // Hiển thị màn hình thua
+        if (resultUI != null)
+        {
+            resultUI.ShowLose();
+        }
+        else if (gameOverText != null)
         {
             gameOverText.text = "Game Over!";
             gameOverText.gameObject.SetActive(true);
         }
+
         OnGameLost?.Invoke();
     }
 

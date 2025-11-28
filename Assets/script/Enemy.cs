@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
 
     [Header("Visual")]
     [SerializeField] private Slider healthSlider; // Reference đến Slider hiển thị máu
+    [SerializeField] private MoneyPopup moneyPopup; // Reference đến MoneyPopup trong canvas
 
     private float currentHealth;
     private List<Vector3> path;
@@ -108,12 +109,19 @@ public class Enemy : MonoBehaviour
     {
         isMoving = false;
 
+        // Hiển thị money popup
+        if (moneyPopup != null)
+        {
+            moneyPopup.Show(moneyReward);
+        }
+
         if (TowerDataManager.Instance != null)
         {
             TowerDataManager.Instance.AddMoney(moneyReward);
         }
 
-        Destroy(gameObject);
+        // Delay destroy để popup kịp hiển thị
+        Destroy(gameObject, 1.5f);
     }
 
     /// <summary>
