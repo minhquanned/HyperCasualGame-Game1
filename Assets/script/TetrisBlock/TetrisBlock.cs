@@ -205,7 +205,7 @@ public partial class TetrisBlock : MonoBehaviour
     // Getters & Setters
     public TetrisBlockType GetBlockType() => blockType;
     public int GetLevel() => level;
-    
+
     /// <summary>
     /// Set level với clamp tự động (1-9)
     /// </summary>
@@ -218,7 +218,7 @@ public partial class TetrisBlock : MonoBehaviour
             currentTower.SetLevel(level);
         }
     }
-    
+
     public BlockShape GetShape() => currentShape;
     public Vector2Int GetGridPosition() => gridPosition;
     public bool IsPlaced() => isPlaced;
