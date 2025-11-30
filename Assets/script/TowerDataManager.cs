@@ -7,7 +7,7 @@ public class TowerDataManager : MonoBehaviour
 {
     private const string TOWER_DATA_FILE = "TowerUpgradeData";
     private const string PLAYER_DATA_FILE = "PlayerData";
-    
+
     private static TowerDataManager instance;
     public static TowerDataManager Instance
     {
@@ -26,10 +26,10 @@ public class TowerDataManager : MonoBehaviour
             return instance;
         }
     }
-    
+
     private TowerUpgradeData towerData;
     private PlayerData playerData;
-    
+
     private void Awake()
     {
         if (instance == null)
@@ -43,7 +43,7 @@ public class TowerDataManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    
+
     /// <summary>
     /// Load tất cả dữ liệu
     /// </summary>
@@ -52,7 +52,7 @@ public class TowerDataManager : MonoBehaviour
         LoadTowerData();
         LoadPlayerData();
     }
-    
+
     /// <summary>
     /// Load tower upgrade data
     /// </summary>
@@ -66,7 +66,7 @@ public class TowerDataManager : MonoBehaviour
             SaveTowerData();
         }
     }
-    
+
     /// <summary>
     /// Load player data
     /// </summary>
@@ -79,7 +79,7 @@ public class TowerDataManager : MonoBehaviour
             SavePlayerData();
         }
     }
-    
+
     /// <summary>
     /// Save tower upgrade data
     /// </summary>
@@ -90,7 +90,7 @@ public class TowerDataManager : MonoBehaviour
             LocalDataManager.Save(towerData, TOWER_DATA_FILE);
         }
     }
-    
+
     /// <summary>
     /// Save player data
     /// </summary>
@@ -101,7 +101,7 @@ public class TowerDataManager : MonoBehaviour
             LocalDataManager.Save(playerData, PLAYER_DATA_FILE);
         }
     }
-    
+
     /// <summary>
     /// Lấy tower upgrade data
     /// </summary>
@@ -113,7 +113,7 @@ public class TowerDataManager : MonoBehaviour
         }
         return towerData;
     }
-    
+
     /// <summary>
     /// Lấy player data
     /// </summary>
@@ -125,7 +125,7 @@ public class TowerDataManager : MonoBehaviour
         }
         return playerData;
     }
-    
+
     /// <summary>
     /// Thêm tiền cho player
     /// </summary>
@@ -137,8 +137,14 @@ public class TowerDataManager : MonoBehaviour
         }
         playerData.money += amount;
         SavePlayerData();
+
+        // Thông báo money đã thay đổi
+        if (MoneyDisplayManager.Instance != null)
+        {
+            MoneyDisplayManager.Instance.NotifyMoneyChanged();
+        }
     }
-    
+
     /// <summary>
     /// Trừ tiền của player
     /// </summary>
@@ -148,16 +154,23 @@ public class TowerDataManager : MonoBehaviour
         {
             LoadPlayerData();
         }
-        
+
         if (playerData.money >= amount)
         {
             playerData.money -= amount;
             SavePlayerData();
+
+            // Thông báo money đã thay đổi
+            if (MoneyDisplayManager.Instance != null)
+            {
+                MoneyDisplayManager.Instance.NotifyMoneyChanged();
+            }
+
             return true;
         }
         return false;
     }
-    
+
     /// <summary>
     /// Lấy số tiền hiện tại
     /// </summary>
@@ -169,7 +182,7 @@ public class TowerDataManager : MonoBehaviour
         }
         return playerData.money;
     }
-    
+
     /// <summary>
     /// Upgrade một stat của tower
     /// </summary>
@@ -179,13 +192,13 @@ public class TowerDataManager : MonoBehaviour
         {
             LoadTowerData();
         }
-        
+
         // Kiểm tra đủ tiền không
         if (!SpendMoney(cost))
         {
             return false;
         }
-        
+
         // Upgrade stat tương ứng
         switch (upgradeType)
         {
@@ -214,7 +227,7 @@ public class TowerDataManager : MonoBehaviour
                 towerData.fireRatePerLevelUpgrade++;
                 break;
         }
-        
+
         SaveTowerData();
         return true;
     }

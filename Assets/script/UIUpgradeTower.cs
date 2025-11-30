@@ -7,9 +7,6 @@ using TMPro;
 /// </summary>
 public class UIUpgradeTower : MonoBehaviour
 {
-    [Header("Money Display")]
-    [SerializeField] private TextMeshProUGUI moneyText;
-
     [Header("Upgrade Buttons - Base Stats")]
     [SerializeField] private Button upgradeBaseDamageButton;
     [SerializeField] private TextMeshProUGUI baseDamageText;
@@ -49,10 +46,13 @@ public class UIUpgradeTower : MonoBehaviour
 
     private TowerDataManager dataManager;
     private TowerUpgradeData towerData;
+    private MoneyDisplayManager moneyManager;
 
     private void Start()
     {
         dataManager = TowerDataManager.Instance;
+        moneyManager = MoneyDisplayManager.Instance;
+
         if (dataManager == null)
         {
             Debug.LogError("TowerDataManager not found!");
@@ -152,12 +152,6 @@ public class UIUpgradeTower : MonoBehaviour
     {
         if (dataManager == null || towerData == null) return;
 
-        // Cập nhật tiền
-        if (moneyText != null)
-        {
-            moneyText.text = $"{dataManager.GetMoney()}";
-        }
-
         // Cập nhật Base Damage
         if (baseDamageText != null)
         {
@@ -166,7 +160,7 @@ public class UIUpgradeTower : MonoBehaviour
         if (baseDamageCostText != null)
         {
             int cost = CalculateCost(towerData.baseDamageLevel);
-            baseDamageCostText.text = $"Cost: {cost}";
+            baseDamageCostText.text = $"{cost}";
         }
         if (upgradeBaseDamageButton != null)
         {
@@ -182,7 +176,7 @@ public class UIUpgradeTower : MonoBehaviour
         if (baseRangeCostText != null)
         {
             int cost = CalculateCost(towerData.baseRangeLevel);
-            baseRangeCostText.text = $"Cost: {cost}";
+            baseRangeCostText.text = $"{cost}";
         }
         if (upgradeBaseRangeButton != null)
         {
@@ -198,7 +192,7 @@ public class UIUpgradeTower : MonoBehaviour
         if (baseFireRateCostText != null)
         {
             int cost = CalculateCost(towerData.baseFireRateLevel);
-            baseFireRateCostText.text = $"Cost: {cost}";
+            baseFireRateCostText.text = $"{cost}";
         }
         if (upgradeBaseFireRateButton != null)
         {
@@ -214,7 +208,7 @@ public class UIUpgradeTower : MonoBehaviour
         if (damagePerLevelCostText != null)
         {
             int cost = CalculateCost(towerData.damagePerLevelUpgrade);
-            damagePerLevelCostText.text = $"Cost: {cost}";
+            damagePerLevelCostText.text = $"{cost}";
         }
         if (upgradeDamagePerLevelButton != null)
         {
@@ -230,7 +224,7 @@ public class UIUpgradeTower : MonoBehaviour
         if (rangePerLevelCostText != null)
         {
             int cost = CalculateCost(towerData.rangePerLevelUpgrade);
-            rangePerLevelCostText.text = $"Cost: {cost}";
+            rangePerLevelCostText.text = $"{cost}";
         }
         if (upgradeRangePerLevelButton != null)
         {
@@ -246,7 +240,7 @@ public class UIUpgradeTower : MonoBehaviour
         if (fireRatePerLevelCostText != null)
         {
             int cost = CalculateCost(towerData.fireRatePerLevelUpgrade);
-            fireRatePerLevelCostText.text = $"Cost: {cost}";
+            fireRatePerLevelCostText.text = $"{cost}";
         }
         if (upgradeFireRatePerLevelButton != null)
         {
