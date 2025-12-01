@@ -13,9 +13,7 @@ public class MoneyDisplayManager : MonoBehaviour
 
     [Header("Auto-detect Settings")]
     [SerializeField] private string moneyDisplayTag = "MoneyDisplay";
-    [Tooltip("Nếu true, tự động tìm các TextMeshProUGUI có tag khi Start")]
     [SerializeField] private bool autoDetectOnStart = true;
-    [Tooltip("Nếu true, tự động scan lại mỗi khi scene có object mới được enable")]
     [SerializeField] private bool autoDetectNewObjects = true;
 
     // Event được gọi khi money thay đổi
@@ -93,11 +91,6 @@ public class MoneyDisplayManager : MonoBehaviour
                     registeredCount++;
                 }
             }
-        }
-
-        if (registeredCount > 0)
-        {
-            Debug.Log($"MoneyDisplayManager: Đã đăng ký {registeredCount} money displays");
         }
     }
 

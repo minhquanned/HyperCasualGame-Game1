@@ -44,9 +44,9 @@ public class UIMainMenu : MonoBehaviour
 
     private void OnPlayClicked()
     {
+        EventBus.Publish(new OnPlayClicked());
         // load game scene or start game
         SceneManager.LoadScene(1);
-        EventBus.Publish(new OnPlayClicked());
     }
 
     private void OnSettingClicked()
