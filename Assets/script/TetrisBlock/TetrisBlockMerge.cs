@@ -132,6 +132,12 @@ public partial class TetrisBlock
         // Xóa khối kia (sẽ tự động xóa tower của nó khi destroy)
         Destroy(otherBlock.gameObject);
 
+        // Phát âm thanh PowerUp khi merge thành công
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayOneShot(AudioType.PowerUp);
+        }
+
         // Cập nhật tower với level mới và vị trí mới
         UpdateTowerAfterMerge();
 

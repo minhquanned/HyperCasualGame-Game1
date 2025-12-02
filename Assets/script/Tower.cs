@@ -34,7 +34,7 @@ public class Tower : MonoBehaviour
     private float lastFireTime = 0f;
     private List<Enemy> enemiesInRange = new List<Enemy>();
     private Enemy currentTarget;
-    
+
     // Cache material instances để tránh tạo mới mỗi lần (chỉ cache material "UpgradeMat")
     private Dictionary<Renderer, Material> cachedUpgradeMaterials = new Dictionary<Renderer, Material>();
 
@@ -167,6 +167,12 @@ public class Tower : MonoBehaviour
     {
         if (currentTarget == null || projectilePrefab == null) return;
 
+        // Phát âm thanh shoot
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayOneShot(AudioType.Shoot);
+        }
+
         // Tạo projectile trong 3D space
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
 
@@ -268,7 +274,7 @@ public class Tower : MonoBehaviour
         if (!RarityColors.ContainsKey(rarityLevel)) return;
 
         Color rarityColor = RarityColors[rarityLevel];
-        
+
         // Duyệt qua tất cả renderer trong danh sách
         foreach (Renderer renderer in towerRenderers)
         {
@@ -276,7 +282,7 @@ public class Tower : MonoBehaviour
 
             // Lấy hoặc cache material "UpgradeMat"
             Material upgradeMaterial = GetOrCacheUpgradeMaterial(renderer);
-            
+
             if (upgradeMaterial != null)
             {
                 // Thử set màu với nhiều property name phổ biến (URP shader thường dùng _BaseColor)
@@ -322,7 +328,7 @@ public class Tower : MonoBehaviour
         // Tìm material có tên "UpgradeMat"
         Material[] materials = renderer.materials;
         int upgradeMatIndex = -1;
-        
+
         for (int i = 0; i < materials.Length; i++)
         {
             if (materials[i] != null && materials[i].name.Contains("UpgradeMat"))
@@ -338,11 +344,11 @@ public class Tower : MonoBehaviour
         // Chỉ tạo một lần và cache lại
         Material materialInstance = new Material(materials[upgradeMatIndex]);
         cachedUpgradeMaterials[renderer] = materialInstance;
-        
+
         // Cập nhật lại materials array với instance mới
         materials[upgradeMatIndex] = materialInstance;
         renderer.materials = materials;
-        
+
         return materialInstance;
     }
 

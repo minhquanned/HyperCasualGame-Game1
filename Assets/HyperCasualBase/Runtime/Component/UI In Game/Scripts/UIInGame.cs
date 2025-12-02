@@ -23,6 +23,7 @@ public class UIInGame : MonoBehaviour
 
     private void OnPauseClicked()
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         EventBus.Publish(new OnPauseClicked());
         uIPauseMenu.Show();
     }

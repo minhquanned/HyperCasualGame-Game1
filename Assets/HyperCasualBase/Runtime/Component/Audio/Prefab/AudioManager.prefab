@@ -1,0 +1,146 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7374764286472911860
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5277541255617011590}
+  - component: {fileID: 5877290046356532789}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5277541255617011590
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7374764286472911860}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5877290046356532789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7374764286472911860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cb617d8abd7f4b4cbab1de91a0cd3ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - audioType: 6
+    clips:
+    - {fileID: 8300000, guid: 5b55cd511cf61974890b5fd8304ada20, type: 3}
+    - {fileID: 8300000, guid: bffca7a4302520648a5f285e20345543, type: 3}
+    - {fileID: 8300000, guid: d898bddce6382d8488f5a8f9afd8b530, type: 3}
+    - {fileID: 8300000, guid: ebde974621a8fd942a69d25c4e892c05, type: 3}
+    - {fileID: 8300000, guid: e4668776d899145499ef78cd9f0fa08a, type: 3}
+    - {fileID: 8300000, guid: f583be3c2bdc58e40ad3e48a058eeda9, type: 3}
+    - {fileID: 8300000, guid: 422803435dd54ae449b4958770322a47, type: 3}
+    - {fileID: 8300000, guid: 9729798ee726be941957e04325904a67, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.15
+    loop: 0
+    isMusic: 0
+    source: {fileID: 0}
+  - audioType: 1
+    clips:
+    - {fileID: 8300000, guid: 1f566d36d0edff64fa03b58ee297922f, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.15
+    loop: 0
+    isMusic: 0
+    source: {fileID: 0}
+  - audioType: 8
+    clips:
+    - {fileID: 8300000, guid: bc1f1a71f35fccd4cbfe68f5d1c14a44, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.15
+    loop: 0
+    isMusic: 0
+    source: {fileID: 0}
+  - audioType: 9
+    clips:
+    - {fileID: 8300000, guid: 126472b416e8e094d91d90ceffb68966, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.15
+    loop: 0
+    isMusic: 0
+    source: {fileID: 0}
+  - audioType: 0
+    clips:
+    - {fileID: 8300000, guid: ea88afaebcaf74046b243b948627c3d0, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.15
+    loop: 0
+    isMusic: 0
+    source: {fileID: 0}
+  - audioType: 2
+    clips:
+    - {fileID: 8300000, guid: 8fc2a2831b4e22542a299bead64b5545, type: 3}
+    volume: 0.75
+    pitch: 1
+    pitchVariation: 0.15
+    loop: 0
+    isMusic: 0
+    source: {fileID: 0}
+  - audioType: 5
+    clips:
+    - {fileID: 8300000, guid: 086b812fab8dd924288caa346a9fa4d2, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.15
+    loop: 0
+    isMusic: 0
+    source: {fileID: 0}
+  - audioType: 3
+    clips:
+    - {fileID: 8300000, guid: caaf7922dbfe06e4dabe1ceef75c1c16, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.15
+    loop: 0
+    isMusic: 0
+    source: {fileID: 0}
+  - audioType: 10
+    clips:
+    - {fileID: 8300000, guid: c842118816930ac409bb1b8e0be59d91, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.15
+    loop: 1
+    isMusic: 1
+    source: {fileID: 0}
+  - audioType: 11
+    clips:
+    - {fileID: 8300000, guid: c842118816930ac409bb1b8e0be59d91, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.15
+    loop: 1
+    isMusic: 1
+    source: {fileID: 0}
+  masterVolume: 1
+  maxAudioSourcesPerSound: 5

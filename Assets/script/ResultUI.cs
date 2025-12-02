@@ -91,6 +91,7 @@ public class ResultUI : MonoBehaviour
     /// </summary>
     private void OnRestartClicked()
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         // Reload scene hiện tại
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
@@ -100,6 +101,7 @@ public class ResultUI : MonoBehaviour
     /// </summary>
     private void OnMainMenuClicked()
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         // Load scene main menu (index 0 hoặc tên scene)
         SceneManager.LoadScene(0);
     }

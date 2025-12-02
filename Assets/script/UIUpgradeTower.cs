@@ -99,6 +99,8 @@ public class UIUpgradeTower : MonoBehaviour
     {
         if (dataManager == null || towerData == null) return;
 
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
+
         int currentLevel = GetCurrentLevel(upgradeType);
         int cost = CalculateCost(currentLevel);
 

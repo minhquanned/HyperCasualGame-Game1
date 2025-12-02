@@ -43,6 +43,7 @@ public class UIPauseMenu : BasePopup
 
     private void OnResumeClicked()
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         EventBus.Publish(new OnResumeClicked());
         Time.timeScale = 1f;
         Hide();
@@ -50,6 +51,7 @@ public class UIPauseMenu : BasePopup
 
     private void OnRestartClicked()
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         EventBus.Publish(new OnRestartClicked());
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -57,12 +59,14 @@ public class UIPauseMenu : BasePopup
 
     private void OnSettingClicked()
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         EventBus.Publish(new OnPauseSettingClicked());
         uIPopupSetting.Show();
     }
 
     private void OnHomeClicked()
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         EventBus.Publish(new OnHomeClicked());
         Time.timeScale = 1f;
         SceneManager.LoadScene(0);

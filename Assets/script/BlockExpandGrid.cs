@@ -111,6 +111,12 @@ public class BlockExpandGrid : MonoBehaviour
                 // Method này sẽ tự động xóa cellNonGrid nếu có
                 if (grid.ExpandGridAtWorldPosition(hit.point, 1))
                 {
+                    // Phát âm thanh Explosion khi sử dụng ExpandBlockGrid
+                    if (AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.PlayOneShot(AudioType.Explosion);
+                    }
+
                     // Spawn particle effect tại vị trí này
                     SpawnParticleEffect(hit.point);
 

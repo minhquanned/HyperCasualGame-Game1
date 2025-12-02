@@ -53,6 +53,12 @@ public class GameManager : MonoBehaviour
         if (itemSpawner == null) itemSpawner = FindFirstObjectByType<ItemSpawner>();
         if (enemySpawner == null) enemySpawner = FindFirstObjectByType<EnemySpawner>();
 
+        // Phát nhạc nền gameplay
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayMusic(AudioType.GameplayMusic, fadeIn: true, fadeDuration: 1.5f);
+        }
+
         // Subscribe events
         if (playerBase != null)
         {
@@ -119,6 +125,8 @@ public class GameManager : MonoBehaviour
     public void EndPlayerPhase()
     {
         if (!isPlayerTurn) return;
+
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
 
         isPlayerTurn = false;
 
@@ -281,6 +289,12 @@ public class GameManager : MonoBehaviour
     {
         isGameActive = false;
 
+        // Phát âm thanh victory
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.Play(AudioType.Victory);
+        }
+
         // Hiển thị màn hình thắng
         if (resultUI != null)
         {
@@ -307,6 +321,12 @@ public class GameManager : MonoBehaviour
     private void LoseGame()
     {
         isGameActive = false;
+
+        // Phát âm thanh failed
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.Play(AudioType.Failed);
+        }
 
         // Hiển thị màn hình thua
         if (resultUI != null)
