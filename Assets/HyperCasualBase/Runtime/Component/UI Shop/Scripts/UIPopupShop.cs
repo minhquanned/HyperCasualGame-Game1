@@ -22,6 +22,7 @@ public class UIPopupShop : BasePopup
 
     private void OnCloseClicked()
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         Hide();
     }
 }

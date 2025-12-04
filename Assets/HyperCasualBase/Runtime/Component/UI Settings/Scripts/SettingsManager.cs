@@ -24,12 +24,24 @@ public class SettingsManager : MonoBehaviour
     {
         Data.isSoundOn = !Data.isSoundOn;
         Save();
+
+        // Cập nhật AudioManager
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.UpdateAllVolumes();
+        }
     }
 
     public void ToggleMusic()
     {
         Data.isMusicOn = !Data.isMusicOn;
         Save();
+
+        // Cập nhật AudioManager
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.UpdateAllVolumes();
+        }
     }
 
     public void ToggleVibration()
@@ -47,7 +59,7 @@ public class SettingsManager : MonoBehaviour
     {
         var settingdata = LocalDataManager.Load<SettingsData>(KEY);
 
-        if(settingdata != default)
+        if (settingdata != default)
         {
             Data = settingdata;
         }

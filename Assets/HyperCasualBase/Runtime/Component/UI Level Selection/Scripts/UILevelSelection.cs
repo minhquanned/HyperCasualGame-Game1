@@ -44,12 +44,14 @@ public class UILevelSelection : MonoBehaviour
 
     private void OnBackClicked()
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         // Hide level selection and return to main menu
         gameObject.SetActive(false);
     }
 
     private void OnLevelSelected(int levelIndex)
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         Debug.Log($"Level {levelIndex} selected");
         // Load the selected level
         // SceneManager.LoadScene($"Level_{levelIndex}");

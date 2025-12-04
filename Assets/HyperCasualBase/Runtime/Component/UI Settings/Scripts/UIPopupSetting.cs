@@ -45,6 +45,7 @@ public class UIPopupSetting : BasePopup
 
     private void OnClickButtonClose()
     {
+        AudioManager.Instance?.PlayOneShot(AudioType.UITap);
         Hide();
     }
 }

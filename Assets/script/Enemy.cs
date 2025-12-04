@@ -99,6 +99,12 @@ public class Enemy : MonoBehaviour
         currentHealth -= damage;
         UpdateHealthBar();
 
+        // Phát âm thanh hit
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayOneShot(AudioType.Hit);
+        }
+
         if (currentHealth <= 0f)
         {
             Die();
