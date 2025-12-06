@@ -47,15 +47,37 @@ public partial class TetrisBlock
                 MeshRenderer mr = cellObj.GetComponent<MeshRenderer>();
                 if (mr != null && mr.material != null)
                 {
+                    // Set base color
                     mr.material.color = blockColor;
+
+                    // Enable emission và set emission color
+                    mr.material.EnableKeyword("_EMISSION");
+                    float intensity = 5f;
+                    Color emissionColor = blockColor * Mathf.LinearToGammaSpace(intensity);
+                    if (mr.material.HasProperty("_EmissionColor"))
+                    {
+                        mr.material.SetColor("_EmissionColor", emissionColor);
+                    }
+
                     cachedCellRenderers.Add(mr);
                 }
-                else 
+                else
                 {
                     MeshRenderer mrChild = cellObj.GetComponentInChildren<MeshRenderer>();
                     if (mrChild != null && mrChild.material != null)
                     {
+                        // Set base color
                         mrChild.material.color = blockColor;
+
+                        // Enable emission và set emission color
+                        mrChild.material.EnableKeyword("_EMISSION");
+                        float intensity = 5f;
+                        Color emissionColor = blockColor * Mathf.LinearToGammaSpace(intensity);
+                        if (mrChild.material.HasProperty("_EmissionColor"))
+                        {
+                            mrChild.material.SetColor("_EmissionColor", emissionColor);
+                        }
+
                         cachedCellRenderers.Add(mrChild);
                     }
                 }

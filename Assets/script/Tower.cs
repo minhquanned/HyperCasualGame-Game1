@@ -41,15 +41,15 @@ public class Tower : MonoBehaviour
     // Màu sắc theo rarity level
     private static readonly Dictionary<int, Color> RarityColors = new Dictionary<int, Color>
     {
-        { 1, HexToColor("fdfefe") }, // Common
-        { 2, HexToColor("27AE60") }, // Uncommon
-        { 3, HexToColor("2471A3") }, // Rare
-        { 4, HexToColor("7D3C98") }, // Epic
-        { 5, HexToColor("f1c40f") }, // Legendary
-        { 6, HexToColor("D35400") }, // Mythic
-        { 7, HexToColor("7B241C") }, // Relic
-        { 8, HexToColor("B3CA1F") }, // Masterwork
-        { 9, HexToColor("dc2367") }  // Eternal
+        { 1, HexToColor("FFFFFF") }, // Common
+        { 2, HexToColor("1AFF00") }, // Uncommon
+        { 3, HexToColor("0064FF") }, // Rare
+        { 4, HexToColor("B400FF") }, // Epic
+        { 5, HexToColor("FFDF00") }, // Legendary
+        { 6, HexToColor("FF6600") }, // Mythic
+        { 7, HexToColor("FF0010") }, // Relic
+        { 8, HexToColor("FFFA00") }, // Masterwork
+        { 9, HexToColor("FF0067") }  // Eternal
     };
 
     private void Awake()
@@ -285,7 +285,7 @@ public class Tower : MonoBehaviour
 
             if (upgradeMaterial != null)
             {
-                // Thử set màu với nhiều property name phổ biến (URP shader thường dùng _BaseColor)
+                // Set base color
                 if (upgradeMaterial.HasProperty("_BaseColor"))
                 {
                     upgradeMaterial.SetColor("_BaseColor", rarityColor);
@@ -294,19 +294,22 @@ public class Tower : MonoBehaviour
                 {
                     upgradeMaterial.SetColor("_Color", rarityColor);
                 }
-                else if (upgradeMaterial.HasProperty("_MainColor"))
+
+                // Enable emission keyword
+                upgradeMaterial.EnableKeyword("_EMISSION");
+
+                // Tạo màu HDR với intensity = 8
+                float intensity = 8f;
+                Color emissionColor = rarityColor * Mathf.LinearToGammaSpace(intensity);
+
+                // Set emission color
+                if (upgradeMaterial.HasProperty("_EmissionColor"))
                 {
-                    upgradeMaterial.SetColor("_MainColor", rarityColor);
+                    upgradeMaterial.SetColor("_EmissionColor", emissionColor);
                 }
-                else if (upgradeMaterial.HasProperty("_TintColor"))
-                {
-                    upgradeMaterial.SetColor("_TintColor", rarityColor);
-                }
-                else
-                {
-                    // Fallback: thử set _Color dù không có property (một số shader vẫn chấp nhận)
-                    upgradeMaterial.color = rarityColor;
-                }
+
+                // Update global illumination
+                upgradeMaterial.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
             }
         }
     }
