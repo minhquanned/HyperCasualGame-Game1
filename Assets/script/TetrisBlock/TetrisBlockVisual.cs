@@ -52,8 +52,8 @@ public partial class TetrisBlock
 
                     // Enable emission và set emission color
                     mr.material.EnableKeyword("_EMISSION");
-                    float intensity = 5f;
-                    Color emissionColor = blockColor * Mathf.LinearToGammaSpace(intensity);
+                    float intensity = 15f;
+                    Color emissionColor = blockColor * intensity;
                     if (mr.material.HasProperty("_EmissionColor"))
                     {
                         mr.material.SetColor("_EmissionColor", emissionColor);
@@ -71,8 +71,8 @@ public partial class TetrisBlock
 
                         // Enable emission và set emission color
                         mrChild.material.EnableKeyword("_EMISSION");
-                        float intensity = 5f;
-                        Color emissionColor = blockColor * Mathf.LinearToGammaSpace(intensity);
+                        float intensity = 15f;
+                        Color emissionColor = blockColor * intensity;
                         if (mrChild.material.HasProperty("_EmissionColor"))
                         {
                             mrChild.material.SetColor("_EmissionColor", emissionColor);
