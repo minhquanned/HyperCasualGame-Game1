@@ -10,7 +10,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Prefabs & References")]
-    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject[] enemyPrefabs; // Danh sách các prefab enemy
     [SerializeField] private PathManager pathManager;
     [SerializeField] private Transform enemyParent;
 
@@ -92,7 +92,7 @@ public class EnemySpawner : MonoBehaviour
     {
         isSpawning = true;
 
-        if (enemyPrefab == null || pathManager == null)
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0 || pathManager == null)
         {
             isSpawning = false;
             yield break;
@@ -105,6 +105,9 @@ public class EnemySpawner : MonoBehaviour
             yield break;
         }
 
+        // Random chọn 1 prefab cho cả đợt này
+        GameObject selectedPrefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+
         int enemyCount = GetEnemyCount(currentTurn);
         float HP = GetEnemyHealth(currentTurn);
         float DMG = GetEnemyDamage(currentTurn);
@@ -112,7 +115,7 @@ public class EnemySpawner : MonoBehaviour
 
         for (int i = 0; i < enemyCount; i++)
         {
-            GameObject enemyObj = Instantiate(enemyPrefab, enemyParent);
+            GameObject enemyObj = Instantiate(selectedPrefab, enemyParent);
 
             // Đặt vị trí spawn (waypoint đầu) - 3D
             if (waypoints.Count > 0)
